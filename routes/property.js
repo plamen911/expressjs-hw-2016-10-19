@@ -273,6 +273,49 @@ router.get('/list', (req, res, next) => {
       })
 })
 
+router.get('/delete/:id',
+  (req, res, next) => {
+      let _id = req.params.id || 0
+
+      Property
+          .findOne({_id: _id})
+          .then((property) => {
+              property
+                  .remove()
+                  .then(() => {
+                      req.property = {
+                          _owner: '',
+                          _agent: ''
+                      }
+
+                      req.old_owner = property._owner
+                      req.old_agent = property._agent
+                      next()
+                  })
+                  .catch((err) => {
+                      res.render('error', {
+                          pageTitle: pageTitle,
+                          message: 'Error deleting property.',
+                          error: err
+                      })
+                  })
+          })
+          .catch((err) => {
+              res.render('error', {
+                  pageTitle: pageTitle,
+                  message: 'Error selecting property.',
+                  error: err
+              })
+          })
+
+  },
+    unlinkPropertyFromOwner,
+    unlinkPropertyFromAgent,
+    (req, res, next) => {
+        res.redirect('/property/list')
+    }
+)
+
 module.exports = router
 
 // utility funcs

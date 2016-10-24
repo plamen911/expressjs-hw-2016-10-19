@@ -268,13 +268,13 @@ router.get('/delete/:id', (req, res, next) => {
 
                         })
                         .catch((err) => {
-                            console.log('Error selecting agent refs: ', err)
+                            return console.log('Error selecting agent refs: ', err)
                         })
 
 
                 })
                 .catch((err) => {
-                    console.log('Error deleting agent: ', err)
+                    return console.log('Error deleting agent: ', err)
                 })
         })
         .catch((err) => {
