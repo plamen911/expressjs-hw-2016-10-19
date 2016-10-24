@@ -78,5 +78,21 @@ block content
       br
     br
     input(type='submit', value='Save')
-
+    h3 Owner Properties
+    if properties && properties.length
+      table.tabletest2
+        thead
+          tr
+            th Area
+            th Street Address
+            th
+        tbody
+          each row in properties
+            tr
+              td= row.area
+              td= row.streetAddr
+              td
+                a(href='/property/update/#{row._id}') View
+    else
+      p No properties found.
   script(src='/javascripts/scripts.js', type='text/javascript')
