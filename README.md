@@ -4,7 +4,7 @@
 
 [Express.js Development - MongoDB and Mongoose - октомври 2016](https://youtu.be/50Z5XKfKIlM)
 
-### Problem 1. Problem 1. Web Site
+### Problem 1. Web Site
 Create a web site (with normal design not something fancy) using ExpressJS – CRUD operations over two models (for example Cats and Owners (but be more creative, please)) by your choice:
 - At least 6 pages
 - Use MongoDB
