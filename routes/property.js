@@ -93,8 +93,10 @@ router.post('/create',
             })
           })
     },
-    updateOwnerToPropertyRef,
-    updateAgentToPropertyRef,
+    unlinkPropertyFromOwner,
+    linkPropertyToOwner,
+    unlinkPropertyFromAgent,
+    linkPropertyToAgent,
     (req, res, next) => {
       res.redirect('/property/update/' + req.property._id)
     }
@@ -148,6 +150,9 @@ router.post('/update/:id',
       Property
           .findOne({_id: _id})
           .then((property) => {
+            req.old_owner = property._owner
+            req.old_agent = property._agent
+
             property = _.extend(property, data)
             property
                 .save()
@@ -171,8 +176,10 @@ router.post('/update/:id',
             })
           })
     },
-    // updateOwnerToPropertyRef,
-    // updateAgentToPropertyRef,
+    unlinkPropertyFromOwner,
+    linkPropertyToOwner,
+    unlinkPropertyFromAgent,
+    linkPropertyToAgent,
     (req, res, next) => {
       res.redirect('/property/update/' + req.property._id)
     }
@@ -198,8 +205,8 @@ router.get('/update/:id',
               data = _.extend(getPostedData(req), data)
               data = _.extend(data, property)
 
-              data._owner = data._owner.toString()
-              data._agent = data._agent.toString()
+              data._owner = (data._owner && data._owner.toString()) || null
+              data._agent = (data._agent && data._agent.toString()) || null
 
               res.render('form_property', data)
             })
@@ -247,6 +254,8 @@ router.get('/list', (req, res, next) => {
 
   Property
       .find(query)
+      .populate('_owner') // <-- only works if you pushed refs to children
+      .populate('_agent') // <-- only works if you pushed refs to children
       .sort('-createdAt')
       .limit(pageSize)
       .then((properties) => {
@@ -313,8 +322,44 @@ function getAgentPulldownData (req, res, next) {
         })
 }
 
+function unlinkPropertyFromOwner(req, res, next) {
+    if (req.old_owner && req.old_owner.toString() !== req.property._owner.toString()) {
+        Owner
+            .findOne({_id: req.old_owner})
+            .then((owner) => {
+                let properties = owner.properties || []
+                if (properties.length) {
+                    let index = _.indexOf(properties, req.old_owner.toString());
+                    properties.splice(index, 1);
+                }
+                owner.properties = properties
+                owner
+                    .save()
+                    .then((owner) => {
+                        next()
+                    })
+                    .catch((err) => {
+                        res.render('error', {
+                            pageTitle: pageTitle,
+                            message: 'Error updating owner.',
+                            error: err
+                        })
+                    })
+            })
+            .catch((err) => {
+                res.render('error', {
+                    pageTitle: pageTitle,
+                    message: 'Error selecting owner.',
+                    error: err
+                })
+            })
+    } else {
+        next()
+    }
+}
+
 // saving a ref. to this property in owner's object
-function updateOwnerToPropertyRef (req, res, next) {
+function linkPropertyToOwner (req, res, next) {
   Owner
         .findOne({_id: req.property._owner})
         .then((owner) => {
@@ -346,8 +391,44 @@ function updateOwnerToPropertyRef (req, res, next) {
         })
 }
 
+function unlinkPropertyFromAgent(req, res, next) {
+    if (req.old_agent && req.old_agent.toString() !== req.property._agent.toString()) {
+        Agent
+            .findOne({_id: req.old_agent})
+            .then((agent) => {
+                let properties = agent.properties || []
+                if (properties.length) {
+                    let index = _.indexOf(properties, req.old_agent.toString());
+                    properties.splice(index, 1);
+                }
+                agent.properties = properties
+                agent
+                    .save()
+                    .then((agent) => {
+                        next()
+                    })
+                    .catch((err) => {
+                        res.render('error', {
+                            pageTitle: pageTitle,
+                            message: 'Error updating agent.',
+                            error: err
+                        })
+                    })
+            })
+            .catch((err) => {
+                res.render('error', {
+                    pageTitle: pageTitle,
+                    message: 'Error selecting agent.',
+                    error: err
+                })
+            })
+    } else {
+        next()
+    }
+}
+
 // saving a ref. to this property in agent's object
-function updateAgentToPropertyRef (req, res, next) {
+function linkPropertyToAgent (req, res, next) {
   Agent
         .findOne({_id: req.property._agent})
         .then((agent) => {

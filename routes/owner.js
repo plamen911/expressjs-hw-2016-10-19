@@ -2,6 +2,7 @@ let express = require('express')
 let router = express.Router()
 let config = require('../config')
 let Owner = require('../models/owner')
+let Property = require('../models/property')
 let _ = require('underscore')
 let upload = require('../middleware/upload')
 
@@ -159,6 +160,7 @@ router.get('/update/:id', (req, res, next) => {
 
   Owner
         .findOne({_id: _id})
+        .populate('properties')
         .then((owner) => {
           let data = {
             pageTitle: pageTitle,
@@ -222,6 +224,65 @@ router.get('/list', (req, res, next) => {
             message: 'Error selecting owners.',
             error: err
           })
+        })
+})
+
+router.get('/delete/:id', (req, res, next) => {
+    let _id = req.params.id || 0
+
+    Owner
+        .findOne({_id: _id})
+        .then((owner) => {
+            owner
+                .remove()
+                .then(() => {
+                    // remove all references in property objects to this owner
+                    Property
+                        .find({_owner: _id})
+                        .then((properties) => {
+                            // loop trough each property to remove the owner reference
+                            let removeOwnerRef = (i) => {
+                                if (typeof properties[i] === 'undefined') {
+                                    res.redirect('/owner/list')
+                                }
+                                properties[i]._owner = null
+                                properties[i]
+                                    .save()
+                                    .then((property) => {
+                                        removeOwnerRef(++i)
+                                    })
+                                    .catch((err) => {
+                                        res.render('error', {
+                                            pageTitle: pageTitle,
+                                            message: 'Error removing reference to owner.',
+                                            error: err
+                                        })
+                                    })
+                            }
+
+                            if (properties) {
+                                removeOwnerRef(0)
+                            } else {
+                                res.redirect('/owner/list')
+                            }
+
+                        })
+                        .catch((err) => {
+                            console.log('Error selecting owner refs: ', err)
+                        })
+
+
+                })
+                .catch((err) => {
+                    console.log('Error deleting owner: ', err)
+                })
+        })
+        .catch((err) => {
+            res.render('error', {
+                pageTitle: pageTitle,
+                message: 'Error selecting owner.',
+                error: err
+            })
         })
 })
 

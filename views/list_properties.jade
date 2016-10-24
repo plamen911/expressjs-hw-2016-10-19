@@ -19,9 +19,11 @@ block content
             td= row.area
             td= row.streetAddr
             td
-              a(href='/owner/update/#{row._owner._id}') #{row._owner.firstName} #{row._owner.lastName}
+              if row._owner
+                a(href='/owner/update/#{row._owner._id}') #{row._owner.firstName} #{row._owner.lastName}
             td
-              a(href='/owner/update/#{row._agent._id}') #{row._agent.firstName} #{row._agent.lastName}
+              if row._agent
+                a(href='/agent/update/#{row._agent._id}') #{row._agent.firstName} #{row._agent.lastName}
             td
               a(href='/property/update/#{row._id}') Edit
             td
