@@ -36,6 +36,19 @@ app.use('/owner', owner)
 app.use('/agent', agent)
 app.use('/users', users)
 
+// page not found
+app.all('*', (req, res) => {
+  let err = new Error('Page Not Found')
+  err.message = 'Page Not Found.'
+  err.status = 404
+  err.stack = 'This is not the page you were looking for.'
+  res.render('error', {
+    pageTitle: 'Page Not Found',
+    message: err.message,
+    error: err
+  })
+})
+
 // catch 404 and forward to error handler
 app.use(function (req, res, next) {
   let err = new Error('Not Found')
