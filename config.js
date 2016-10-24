@@ -26,7 +26,7 @@ let db = mongoose.connection
 
 // db.on('error', console.error.bind(console, 'connection error'))
 db.on('error', (err) => {
-  console.log('connection error')
+  console.log('connection error: ', err)
 })
 db.once('open', (callback) => {
   console.log('Connection succeeded')

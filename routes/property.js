@@ -82,8 +82,8 @@ router.post('/create',
       new Property(data)
           .save()
           .then((property) => {
-              req.property = property
-              next()
+            req.property = property
+            next()
           })
           .catch((err) => {
             res.render('error', {
@@ -96,7 +96,7 @@ router.post('/create',
     updateOwnerToPropertyRef,
     updateAgentToPropertyRef,
     (req, res, next) => {
-        res.redirect('/property/update/' + req.property._id)
+      res.redirect('/property/update/' + req.property._id)
     }
 )
 
@@ -109,19 +109,19 @@ router.post('/update/:id',
       let data = getPostedData(req)
 
       // form validation
-        let errors = []
-        if (!data._owner) {
-            errors.push('Owner is missing.')
-        }
-        if (!data._agent) {
-            errors.push('Agent is missing.')
-        }
-        if (!data.area) {
-            errors.push('Area is missing.')
-        }
-        if (!data.streetAddr) {
-            errors.push('Street Address is missing.')
-        }
+      let errors = []
+      if (!data._owner) {
+        errors.push('Owner is missing.')
+      }
+      if (!data._agent) {
+        errors.push('Agent is missing.')
+      }
+      if (!data.area) {
+        errors.push('Area is missing.')
+      }
+      if (!data.streetAddr) {
+        errors.push('Street Address is missing.')
+      }
       if (req.files && req.files['avatar']) {
         if (!req.files['avatar'].uploadErrors.length) {
           data.avatar = req.files['avatar'].fileName
@@ -152,8 +152,8 @@ router.post('/update/:id',
             property
                 .save()
                 .then((property) => {
-                    req.property = property
-                    next()
+                  req.property = property
+                  next()
                 })
                 .catch((err) => {
                   res.render('error', {
@@ -174,7 +174,7 @@ router.post('/update/:id',
     // updateOwnerToPropertyRef,
     // updateAgentToPropertyRef,
     (req, res, next) => {
-        res.redirect('/property/update/' + req.property._id)
+      res.redirect('/property/update/' + req.property._id)
     }
 )
 
@@ -183,32 +183,32 @@ router.get('/update/:id',
     getOwnerPulldownData,
     getAgentPulldownData,
     (req, res, next) => {
-        let _id = req.params.id || 0
+      let _id = req.params.id || 0
 
-        Property
+      Property
             .findOne({_id: _id})
             .then((property) => {
-                let data = {
-                    pageTitle: pageTitle,
-                    formTitle: pageTitle,
-                    formAction: '/property/update/' + property._id,
-                    owners: req.owners,
-                    agents: req.agents
-                }
-                data = _.extend(getPostedData(req), data)
-                data = _.extend(data, property)
+              let data = {
+                pageTitle: pageTitle,
+                formTitle: pageTitle,
+                formAction: '/property/update/' + property._id,
+                owners: req.owners,
+                agents: req.agents
+              }
+              data = _.extend(getPostedData(req), data)
+              data = _.extend(data, property)
 
-                data._owner = data._owner.toString()
-                data._agent = data._agent.toString()
+              data._owner = data._owner.toString()
+              data._agent = data._agent.toString()
 
-                res.render('form_property', data)
+              res.render('form_property', data)
             })
             .catch((err) => {
-                res.render('error', {
-                    pageTitle: pageTitle,
-                    message: 'Error selecting property.',
-                    error: err
-                })
+              res.render('error', {
+                pageTitle: pageTitle,
+                message: 'Error selecting property.',
+                error: err
+              })
             })
     })
 
@@ -216,16 +216,16 @@ router.get('/',
   getOwnerPulldownData,
   getAgentPulldownData,
   (req, res, next) => {
-      let data = {
-        pageTitle: pageTitle,
-        formTitle: 'Add New Property',
-        formAction: '/property/create',
-        owners: req.owners,
-        agents: req.agents
-      }
-      data = _.extend(getPostedData(req), data)
-      res.render('form_property', data)
-})
+    let data = {
+      pageTitle: pageTitle,
+      formTitle: 'Add New Property',
+      formAction: '/property/create',
+      owners: req.owners,
+      agents: req.agents
+    }
+    data = _.extend(getPostedData(req), data)
+    res.render('form_property', data)
+  })
 
 // display list of properties
 router.get('/list', (req, res, next) => {
@@ -267,114 +267,114 @@ router.get('/list', (req, res, next) => {
 module.exports = router
 
 // utility funcs
-function getOwnerPulldownData(req, res, next) {
+function getOwnerPulldownData (req, res, next) {
     // get all owners
-    Owner
+  Owner
         .find({})
         .sort('-createdAt')
         .then((owners) => {
-            owners.unshift({
-                _id: '',
-                firstName: '- select -',
-                lastName: ''
-            });
-            req.owners = owners;
-            next()
+          owners.unshift({
+            _id: '',
+            firstName: '- select -',
+            lastName: ''
+          })
+          req.owners = owners
+          next()
         })
         .catch((err) => {
-            res.render('error', {
-                pageTitle: 'Owner List',
-                message: 'Error selecting owners.',
-                error: err
-            })
+          res.render('error', {
+            pageTitle: 'Owner List',
+            message: 'Error selecting owners.',
+            error: err
+          })
         })
 }
 
-function getAgentPulldownData(req, res, next) {
+function getAgentPulldownData (req, res, next) {
     // get all agents
-    Agent
+  Agent
         .find({})
         .sort('-createdAt')
         .then((agents) => {
-            agents.unshift({
-                _id: '',
-                firstName: '- select -',
-                lastName: ''
-            });
-            req.agents = agents;
-            next()
+          agents.unshift({
+            _id: '',
+            firstName: '- select -',
+            lastName: ''
+          })
+          req.agents = agents
+          next()
         })
         .catch((err) => {
-            res.render('error', {
-                pageTitle: 'Agent List',
-                message: 'Error selecting agents.',
-                error: err
-            })
+          res.render('error', {
+            pageTitle: 'Agent List',
+            message: 'Error selecting agents.',
+            error: err
+          })
         })
 }
 
 // saving a ref. to this property in owner's object
-function updateOwnerToPropertyRef(req, res, next) {
-    Owner
+function updateOwnerToPropertyRef (req, res, next) {
+  Owner
         .findOne({_id: req.property._owner})
         .then((owner) => {
-            let properties = owner.properties || []
-            properties.push(req.property._id);
-            properties = _.uniq(properties, (property) => {
-                return property.toString();
-            });
-            owner.properties = properties
-            owner
+          let properties = owner.properties || []
+          properties.push(req.property._id)
+          properties = _.uniq(properties, (property) => {
+            return property.toString()
+          })
+          owner.properties = properties
+          owner
                 .save()
                 .then((owner) => {
-                    next()
+                  next()
                 })
                 .catch((err) => {
-                    res.render('error', {
-                        pageTitle: pageTitle,
-                        message: 'Error updating owner.',
-                        error: err
-                    })
+                  res.render('error', {
+                    pageTitle: pageTitle,
+                    message: 'Error updating owner.',
+                    error: err
+                  })
                 })
         })
         .catch((err) => {
-            res.render('error', {
-                pageTitle: pageTitle,
-                message: 'Error selecting owner.',
-                error: err
-            })
+          res.render('error', {
+            pageTitle: pageTitle,
+            message: 'Error selecting owner.',
+            error: err
+          })
         })
 }
 
 // saving a ref. to this property in agent's object
-function updateAgentToPropertyRef(req, res, next) {
-    Agent
+function updateAgentToPropertyRef (req, res, next) {
+  Agent
         .findOne({_id: req.property._agent})
         .then((agent) => {
-            let properties = agent.properties || []
-            properties.push(req.property._id);
-            properties = _.uniq(properties, (property) => {
-                return property.toString();
-            });
-            agent.properties = properties
-            agent
+          let properties = agent.properties || []
+          properties.push(req.property._id)
+          properties = _.uniq(properties, (property) => {
+            return property.toString()
+          })
+          agent.properties = properties
+          agent
                 .save()
                 .then((agent) => {
-                    next()
+                  next()
                 })
                 .catch((err) => {
-                    res.render('error', {
-                        pageTitle: pageTitle,
-                        message: 'Error updating agent.',
-                        error: err
-                    })
+                  res.render('error', {
+                    pageTitle: pageTitle,
+                    message: 'Error updating agent.',
+                    error: err
+                  })
                 })
         })
         .catch((err) => {
-            res.render('error', {
-                pageTitle: pageTitle,
-                message: 'Error selecting agent.',
-                error: err
-            })
+          res.render('error', {
+            pageTitle: pageTitle,
+            message: 'Error selecting agent.',
+            error: err
+          })
         })
 }

@@ -25,5 +25,7 @@
   },
   "devDependencies": {
     "standard": "^8.3.0"
-  }
+  },
+  "author": "Plamen Markov",
+  "license": "ISC"
 }
