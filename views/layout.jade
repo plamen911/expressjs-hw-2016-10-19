@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    title= pageTitle
+    link(rel='stylesheet', href='/stylesheets/style.css')
+    script(src='//ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js', type='text/javascript')
+  body
+    #navMenu
+      ul
+        li
+          a(href='/property/list') Properties
+        li
+          a(href='/owner/list') Owners
+        li
+          a(href='/agent/list') Agents
+    block content

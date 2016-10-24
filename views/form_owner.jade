@@ -1,0 +1,82 @@
+extends layout
+
+block content
+  h1= formTitle
+  if errors
+    ul.error
+      each error in errors
+        li= error
+  form(action='#{formAction}', method='post', enctype='multipart/form-data')
+    label(for='title') Title:
+    select#title(name='title')
+      - titles = ['', 'Mr.', 'Mrs.', 'Mr. & Mrs.', 'Miss', 'Ms.', 'Dr. and Mrs.', 'Mr. and Dr.']
+      each item in titles
+        option(selected=title == item, value='#{item}') #{item}
+    br
+    label(for='firstName') First Name:
+    input#firstName(type='text', name='firstName', value='#{firstName}')
+    br
+    label(for='middleInit') MI:
+    input#middleInit(type='text', name='middleInit', value='#{middleInit}')
+    br
+    label(for='lastName') Last Name:
+    input#lastName(type='text', name='lastName', value='#{lastName}')
+    br
+    label(for='preferredName') Preferred Name:
+    input#preferredName(type='text', name='preferredName', value='#{preferredName}')
+    br
+    label(for='company') Company:
+    input#company(type='text', name='company', value='#{company}')
+    br
+    label(for='notes') Notes:
+    textarea#notes(name='notes') #{notes}
+    br
+    label(for='streetAddr') Street Address:
+    input#streetAddr(type='text', name='streetAddr', value='#{streetAddr}')
+    br
+    label(for='streetAddr2') Street Address 2:
+    input#streetAddr2(type='text', name='streetAddr2', value='#{streetAddr2}')
+    br
+    label(for='city') City:
+    input#city(type='text', name='city', value='#{city}')
+    br
+    label(for='state') State:
+    input#state(type='text', name='state', value='#{state}')
+    br
+    label(for='zip') ZIP:
+    input#zip(type='text', name='zip', value='#{zip}')
+    br
+    a#addEmail(href='#') (+)
+    | Emails:
+    br
+    ul#emailList
+      each email in emails
+        li
+          input(type='text', name='emails', value='#{email}')
+          a.removeEmail(href='#') (-)
+    br
+    a#addPhone(href='#') (+)
+    | Phones:
+    br
+    - phoneTypes = ['', 'Work', 'Home', 'Mobile', 'Fax']
+    ul#phoneList
+      if phones
+        each phone in phones
+          li
+            input(type='text', name='phoneNum', value='#{phone.phoneNum}')
+            select(name='phoneType')
+              each item in phoneTypes
+                option(selected=phone.phoneType == item, value='#{item}') #{item}
+            a.removePhone(href='#') (-)
+    br
+    if avatar
+      img(src='/uploads/#{avatar}', width='120', alt='avatar')
+      br
+    if firstName
+      label(for='avatar') Avatar:
+      input#avatar(type='file', name='avatar', accept='image/*')
+      br
+    br
+    input(type='submit', value='Save')
+
+  script(src='/javascripts/scripts.js', type='text/javascript')

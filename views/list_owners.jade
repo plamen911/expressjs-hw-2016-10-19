@@ -1,0 +1,40 @@
+extends layout
+
+block content
+  h1 Owner List
+  p
+    a(href='/owner') New Owner
+  if rows && rows.length
+    table
+      thead
+        tr
+          th First Name
+          th Last Name
+          th E-mail
+          th Phone
+          th Num. Properties
+          th(colspan='2')
+      tbody
+        each row in rows
+          tr
+            td= row.firstName
+            td= row.lastName
+            td= (row.emails[0]) ? row.emails[0] : '--'
+            td= (row.phones[0]) ? row.phones[0].phoneNum : '--'
+            td= row.properties.length
+            td
+              a(href='/owner/update/#{row._id}') Edit
+            td
+              a(id='lnkDelete_#{row._id}', href='/owner/delete/#{row._id}') Delete
+    script.
+      $(function () {
+        $('a[id^="lnkDelete_"]').bind('click', function (e) {
+          e.preventDefault();
+          if (!confirm('Are you sure you want to remove this owner and all associated data?')) {
+            return false;
+          }
+        });
+      })
+  else
+    h4 No owners found.
+

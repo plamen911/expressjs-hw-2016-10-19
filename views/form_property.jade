@@ -1,0 +1,98 @@
+extends layout
+
+block content
+  h1= formTitle
+  if errors
+    ul.error
+      each error in errors
+        li= error
+  form(action='#{formAction}', method='post', enctype='multipart/form-data')
+    label(for='_owner') Owner:
+      select#_owner(name='_owner')
+        each item in owners
+          option(selected=_owner == item._id, value='#{item._id}') #{item.firstName} #{item.lastName}
+    br
+    label(for='_agent') Agent:
+      select#_agent(name='_agent')
+        each item in agents
+          option(selected=_agent == item._id, value='#{item._id}') #{item.firstName} #{item.lastName}
+    br
+    label(for='propertyName') House Name:
+    input#propertyName(type='text', name='propertyName', value='#{propertyName}')
+    br
+    label(for='area') Area:
+      select#area(name='area')
+        - areas = ['', 'Town', 'Dionis', 'Sconset', 'Cisco', 'Madaket', 'Brant Point', 'Cliff', 'Edge of Town', 'Hummock Pond', 'Madequecham', 'Miacomet', 'Mid-Island', 'Naushop', 'Monomoy', 'Nashaquisset', 'Pocomo', 'Polpis', 'Quaise', 'Quidnet', 'Shawkemo', 'Shimmo', 'Squam', 'Surfside', 'Tom Nevers', 'Wauwinet']
+        each item in areas
+          option(selected=area == item, value='#{item}') #{item}
+    br
+    label(for='streetAddr') Street Address:
+      input#streetAddr(type='text', name='streetAddr', value='#{streetAddr}')
+    br
+    label(for='streetAddr2') Street Address 2:
+      input#streetAddr2(type='text', name='streetAddr2', value='#{streetAddr2}')
+    br
+    label(for='city') City:
+      input#city(type='text', name='city', value='#{city}')
+    br
+    label(for='state') State:
+      input#state(type='text', name='state', value='#{state}')
+    br
+    label(for='zip') Zip:
+      input#zip(type='text', name='zip', value='#{zip}')
+    br
+    label(for='phone') Phone:
+      input#phone(type='text', name='phone', value='#{phone}')
+    br
+    label(for='fax') Fax:
+      input#fax(type='text', name='fax', value='#{fax}')
+    br
+    label(for='showPropertyOnWeb') List on web site?
+      select#showPropertyOnWeb(name='showPropertyOnWeb')
+        each item in ['Yes', 'No']
+          option(selected=showPropertyOnWeb == item, value='#{item}') #{item}
+    br
+    label(for='status') Status:
+      select#status(name='status')
+        each item in ['Active', 'Inactive']
+          option(selected=status == item, value='#{item}') #{item}
+    br
+    label(for='showAddressOnWeb') Display address on web site?
+      select#showAddressOnWeb(name='showAddressOnWeb')
+        each item in ['Yes', 'No']
+          option(selected=showAddressOnWeb == item, value='#{item}') #{item}
+    br
+    label(for='cleanningHours') Cleaning Hours:
+      input#cleanningHours(type='text', name='cleanningHours', value='#{cleanningHours}')
+    br
+    label(for='notes') Notes:
+      textarea#notes(name='notes') #{notes}
+    br
+    label(for='comments') Comments:
+      textarea#comments(name='comments') #{comments}
+    br
+    label(for='description') Description:
+      textarea#description(name='description') #{description}
+    br
+    label(for='firstFloorDescription') First Floor:
+      textarea#firstFloorDescription(name='firstFloorDescription') #{firstFloorDescription}
+    br
+    label(for='secondFloorDescription') Second Floor:
+      textarea#secondFloorDescription(name='secondFloorDescription') #{secondFloorDescription}
+    br
+    label(for='thirdFloorDescription') Third Floor:
+      textarea#thirdFloorDescription(name='thirdFloorDescription') #{thirdFloorDescription}
+    br
+    label(for='lowerLevelDescription') Lower Level:
+      textarea#lowerLevelDescription(name='lowerLevelDescription') #{lowerLevelDescription}
+    br
+    label(for='cottageDescription') Cottage/Studio:
+      textarea#cottageDescription(name='cottageDescription') #{cottageDescription}
+    br
+
+
+
+    br
+    input(type='submit', value='Save')
+
+  script(src='/javascripts/scripts.js', type='text/javascript')
