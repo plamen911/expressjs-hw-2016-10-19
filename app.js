@@ -4,16 +4,14 @@ let favicon = require('serve-favicon')
 let logger = require('morgan')
 let cookieParser = require('cookie-parser')
 let bodyParser = require('body-parser')
-// let multer = require('multer')
 let busboy = require('connect-busboy')
+let stylus = require('stylus')
 
 let routes = require('./routes/index')
 let property = require('./routes/property')
 let owner = require('./routes/owner')
 let agent = require('./routes/agent')
 let users = require('./routes/users')
-
-// let upload = multer({ dest: './uploads/' })
 
 let app = express()
 
@@ -22,13 +20,18 @@ app.set('views', path.join(__dirname, 'views'))
 app.set('view engine', 'jade')
 
 // uncomment after placing your favicon in /public
-// app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
+app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')))
 app.use(logger('dev'))
 app.use(bodyParser.json())
 app.use(bodyParser.urlencoded({ extended: false }))
 app.use(cookieParser())
 app.use(busboy())
 app.use(express.static(path.join(__dirname, 'public')))
+app.use(stylus.middleware({
+  // src: path.join(__dirname, 'public/stylesheets'),
+  src: path.join(__dirname, 'public'),
+  compile: (str, path) => stylus(str).set('filename', path)
+}))
 
 app.use('/', routes)
 app.use('/property', property)

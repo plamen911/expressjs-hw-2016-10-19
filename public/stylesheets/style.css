@@ -2,11 +2,9 @@ body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
-
 a {
-  color: #00B7FF;
+  color: #00b7ff;
 }
-
 .tabletest2 {
   border-collapse: collapse;
   font-size: 15px;
@@ -14,18 +12,17 @@ a {
   margin-top: 20px;
   width: 100%;
 }
-
-.tabletest2, .tabletest2 th, .tabletest2 td {
+.tabletest2,
+.tabletest2 th,
+.tabletest2 td {
   border-bottom: 1px solid #ddd;
   padding: 8px;
   text-align: left;
 }
-
 table.tabletest2 tbody tr.deleted td {
   text-decoration: line-through;
   color: #999;
 }
-
 .error {
-  color: red;
+  color: #f00;
 }

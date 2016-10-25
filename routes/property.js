@@ -275,44 +275,43 @@ router.get('/list', (req, res, next) => {
 
 router.get('/delete/:id',
   (req, res, next) => {
-      let _id = req.params.id || 0
+    let _id = req.params.id || 0
 
-      Property
+    Property
           .findOne({_id: _id})
           .then((property) => {
-              property
+            property
                   .remove()
                   .then(() => {
-                      req.property = {
-                          _owner: '',
-                          _agent: ''
-                      }
+                    req.property = {
+                      _owner: '',
+                      _agent: ''
+                    }
 
-                      req.old_owner = property._owner
-                      req.old_agent = property._agent
-                      next()
+                    req.old_owner = property._owner
+                    req.old_agent = property._agent
+                    next()
                   })
                   .catch((err) => {
-                      res.render('error', {
-                          pageTitle: pageTitle,
-                          message: 'Error deleting property.',
-                          error: err
-                      })
+                    res.render('error', {
+                      pageTitle: pageTitle,
+                      message: 'Error deleting property.',
+                      error: err
+                    })
                   })
           })
           .catch((err) => {
-              res.render('error', {
-                  pageTitle: pageTitle,
-                  message: 'Error selecting property.',
-                  error: err
-              })
+            res.render('error', {
+              pageTitle: pageTitle,
+              message: 'Error selecting property.',
+              error: err
+            })
           })
-
   },
     unlinkPropertyFromOwner,
     unlinkPropertyFromAgent,
     (req, res, next) => {
-        res.redirect('/property/list')
+      res.redirect('/property/list')
     }
 )
 
@@ -365,40 +364,40 @@ function getAgentPulldownData (req, res, next) {
         })
 }
 
-function unlinkPropertyFromOwner(req, res, next) {
-    if (req.old_owner && req.old_owner.toString() !== req.property._owner.toString()) {
-        Owner
+function unlinkPropertyFromOwner (req, res, next) {
+  if (req.old_owner && req.old_owner.toString() !== req.property._owner.toString()) {
+    Owner
             .findOne({_id: req.old_owner})
             .then((owner) => {
-                let properties = owner.properties || []
-                if (properties.length) {
-                    let index = _.indexOf(properties, req.old_owner.toString());
-                    properties.splice(index, 1);
-                }
-                owner.properties = properties
-                owner
+              let properties = owner.properties || []
+              if (properties.length) {
+                let index = _.indexOf(properties, req.old_owner.toString())
+                properties.splice(index, 1)
+              }
+              owner.properties = properties
+              owner
                     .save()
                     .then((owner) => {
-                        next()
+                      next()
                     })
                     .catch((err) => {
-                        res.render('error', {
-                            pageTitle: pageTitle,
-                            message: 'Error updating owner.',
-                            error: err
-                        })
+                      res.render('error', {
+                        pageTitle: pageTitle,
+                        message: 'Error updating owner.',
+                        error: err
+                      })
                     })
             })
             .catch((err) => {
-                res.render('error', {
-                    pageTitle: pageTitle,
-                    message: 'Error selecting owner.',
-                    error: err
-                })
+              res.render('error', {
+                pageTitle: pageTitle,
+                message: 'Error selecting owner.',
+                error: err
+              })
             })
-    } else {
-        next()
-    }
+  } else {
+    next()
+  }
 }
 
 // saving a ref. to this property in owner's object
@@ -434,40 +433,40 @@ function linkPropertyToOwner (req, res, next) {
         })
 }
 
-function unlinkPropertyFromAgent(req, res, next) {
-    if (req.old_agent && req.old_agent.toString() !== req.property._agent.toString()) {
-        Agent
+function unlinkPropertyFromAgent (req, res, next) {
+  if (req.old_agent && req.old_agent.toString() !== req.property._agent.toString()) {
+    Agent
             .findOne({_id: req.old_agent})
             .then((agent) => {
-                let properties = agent.properties || []
-                if (properties.length) {
-                    let index = _.indexOf(properties, req.old_agent.toString());
-                    properties.splice(index, 1);
-                }
-                agent.properties = properties
-                agent
+              let properties = agent.properties || []
+              if (properties.length) {
+                let index = _.indexOf(properties, req.old_agent.toString())
+                properties.splice(index, 1)
+              }
+              agent.properties = properties
+              agent
                     .save()
                     .then((agent) => {
-                        next()
+                      next()
                     })
                     .catch((err) => {
-                        res.render('error', {
-                            pageTitle: pageTitle,
-                            message: 'Error updating agent.',
-                            error: err
-                        })
+                      res.render('error', {
+                        pageTitle: pageTitle,
+                        message: 'Error updating agent.',
+                        error: err
+                      })
                     })
             })
             .catch((err) => {
-                res.render('error', {
-                    pageTitle: pageTitle,
-                    message: 'Error selecting agent.',
-                    error: err
-                })
+              res.render('error', {
+                pageTitle: pageTitle,
+                message: 'Error selecting agent.',
+                error: err
+              })
             })
-    } else {
-        next()
-    }
+  } else {
+    next()
+  }
 }
 
 // saving a ref. to this property in agent's object

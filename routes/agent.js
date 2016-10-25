@@ -228,61 +228,58 @@ router.get('/list', (req, res, next) => {
 })
 
 router.get('/delete/:id', (req, res, next) => {
-    let _id = req.params.id || 0
+  let _id = req.params.id || 0
 
-    Agent
+  Agent
         .findOne({_id: _id})
         .then((agent) => {
-            agent
+          agent
                 .remove()
                 .then(() => {
                     // remove all references in property objects to this agent
-                    Property
+                  Property
                         .find({_agent: _id})
                         .then((properties) => {
                             // loop trough each property to remove the agent reference
-                            let removeAgentRef = (i) => {
-                                if (typeof properties[i] === 'undefined') {
-                                    res.redirect('/agent/list')
-                                }
-                                properties[i]._agent = null
-                                properties[i]
+                          let removeAgentRef = (i) => {
+                            if (typeof properties[i] === 'undefined') {
+                              res.redirect('/agent/list')
+                            }
+                            properties[i]._agent = null
+                            properties[i]
                                     .save()
                                     .then((property) => {
-                                        removeAgentRef(++i)
+                                      removeAgentRef(++i)
                                     })
                                     .catch((err) => {
-                                        res.render('error', {
-                                            pageTitle: pageTitle,
-                                            message: 'Error removing reference to agent.',
-                                            error: err
-                                        })
+                                      res.render('error', {
+                                        pageTitle: pageTitle,
+                                        message: 'Error removing reference to agent.',
+                                        error: err
+                                      })
                                     })
-                            }
+                          }
 
-                            if (properties) {
-                                removeAgentRef(0)
-                            } else {
-                                res.redirect('/agent/list')
-                            }
-
+                          if (properties) {
+                            removeAgentRef(0)
+                          } else {
+                            res.redirect('/agent/list')
+                          }
                         })
                         .catch((err) => {
-                            return console.log('Error selecting agent refs: ', err)
+                          return console.log('Error selecting agent refs: ', err)
                         })
-
-
                 })
                 .catch((err) => {
-                    return console.log('Error deleting agent: ', err)
+                  return console.log('Error deleting agent: ', err)
                 })
         })
         .catch((err) => {
-            res.render('error', {
-                pageTitle: pageTitle,
-                message: 'Error selecting agent.',
-                error: err
-            })
+          res.render('error', {
+            pageTitle: pageTitle,
+            message: 'Error selecting agent.',
+            error: err
+          })
         })
 })
 
