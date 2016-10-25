@@ -28,7 +28,6 @@ app.use(cookieParser())
 app.use(busboy())
 app.use(express.static(path.join(__dirname, 'public')))
 app.use(stylus.middleware({
-  // src: path.join(__dirname, 'public/stylesheets'),
   src: path.join(__dirname, 'public'),
   compile: (str, path) => stylus(str).set('filename', path)
 }))
