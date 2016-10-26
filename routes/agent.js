@@ -250,11 +250,11 @@ router.get('/delete/:id', (req, res, next) => {
         .findOne({_id: _id})
         .then((agent) => {
           if (agent.avatar) {
-              try {
-                  fs.unlinkSync(UPLOAD_DIR + agent.avatar)
-              } catch (err) {
-                  console.log(`Error deleting avatar: ${err.message}`)
-              }
+            try {
+              fs.unlinkSync(UPLOAD_DIR + agent.avatar)
+            } catch (err) {
+              console.log(`Error deleting avatar: ${err.message}`)
+            }
           }
           agent
                 .remove()
@@ -266,7 +266,7 @@ router.get('/delete/:id', (req, res, next) => {
                             // loop trough each property to remove the agent reference
                           let removeAgentRef = (i) => {
                             if (typeof properties[i] === 'undefined') {
-                              res.redirect('/agent/list')
+                                return res.redirect('/agent/list')
                             }
                             properties[i]._agent = null
                             properties[i]
@@ -275,7 +275,7 @@ router.get('/delete/:id', (req, res, next) => {
                                       removeAgentRef(++i)
                                     })
                                     .catch((err) => {
-                                      res.render('error', {
+                                      return res.render('error', {
                                         pageTitle: pageTitle,
                                         message: 'Error removing reference to agent.',
                                         error: err

@@ -250,11 +250,11 @@ router.get('/delete/:id', (req, res, next) => {
         .findOne({_id: _id})
         .then((owner) => {
           if (owner.avatar) {
-              try {
-                  fs.unlinkSync(UPLOAD_DIR + owner.avatar)
-              } catch (err) {
-                  console.log(`Error deleting avatar: ${err.message}`)
-              }
+            try {
+              fs.unlinkSync(UPLOAD_DIR + owner.avatar)
+            } catch (err) {
+              console.log(`Error deleting avatar: ${err.message}`)
+            }
           }
           owner
                 .remove()
@@ -266,11 +266,8 @@ router.get('/delete/:id', (req, res, next) => {
                           // loop trough each property to remove the owner reference
                           let removeOwnerRef = (i) => {
                             if (typeof properties[i] === 'undefined') {
-                              res.redirect('/owner/list')
+                              return res.redirect('/owner/list')
                             }
-
-                            console.log('removing reference from ' , properties[i]._id)
-
                             properties[i]._owner = null
                             properties[i]
                                     .save()
@@ -278,10 +275,6 @@ router.get('/delete/:id', (req, res, next) => {
                                       removeOwnerRef(++i)
                                     })
                                     .catch((err) => {
-
-
-                                        console.log('Error removing reference to owner...: ', err)
-
                                       return res.render('error', {
                                         pageTitle: pageTitle,
                                         message: 'Error removing reference to owner.',
