@@ -5,7 +5,7 @@ $(function () {
   })
   $('#addEmail').on('click', function (e) {
     e.preventDefault()
-    var s = '<li><input type="text" name="emails"> <a href="#" class="removeEmail">(-)</a></li>'
+    var s = '<li><input type="text" name="emails[]"> <a href="#" class="removeEmail">(-)</a></li>'
     $('#emailList').append(s)
   })
 
@@ -15,8 +15,8 @@ $(function () {
   })
   $('#addPhone').on('click', function (e) {
     e.preventDefault()
-    var s = '<li><input type="text" name="phoneNum"> ' +
-            '<select name="phoneType">';
+    var s = '<li><input type="text" name="phoneNum[]"> ' +
+            '<select name="phoneType[]">';
     ['', 'Work', 'Home', 'Mobile', 'Fax'].forEach(function (item) {
       s += '<option value="' + item + '">' + item + '</option>'
     })

@@ -1,6 +1,7 @@
 let fs = require('fs')
 let path = require('path')
 let uid = require('uid2')
+let _ = require('underscore')
 
 // Constants
 let UPLOAD_DIR = path.join(__dirname, '/../public/uploads/')
@@ -17,10 +18,10 @@ module.exports = (req, res, next) => {
       let targetPath
       let targetName
 
-            // get the extenstion of the file
+      // get the extenstion of the file
       let extension = filename.split(/[. ]+/).pop()
 
-            // create a new name for the image
+      // create a new name for the image
       targetName = uid(22) + '.' + extension
 
       if (typeof req.files === 'undefined') {
@@ -35,20 +36,20 @@ module.exports = (req, res, next) => {
         uploadErrors: []
       }
 
-            // check to see if we support the file type
+      // check to see if we support the file type
       if (IMAGE_TYPES.indexOf(mimetype) === -1) {
         errors.push(`Supported image formats: jpeg, jpg, jpe, png.`)
         req.files[fieldname].uploadErrors = errors
         return file.resume()
       }
 
-            // determine the new path to save the image
+      // determine the new path to save the image
       targetPath = path.join(UPLOAD_DIR + '/', targetName)
 
       writeStream = fs.createWriteStream(targetPath)
       file.pipe(writeStream)
       writeStream.on('close', () => {
-                // res.redirect('back');
+        // res.redirect('back');
       })
     } else {
       file.resume()
@@ -56,7 +57,16 @@ module.exports = (req, res, next) => {
   })
 
   req.busboy.on('field', (key, value, keyTruncated, valueTruncated) => {
-    req.body[key] = value
+    key = key.replace(/[^a-z0-9_]/gi, '')
+    if (req.body.hasOwnProperty(key)) {
+      if (_.isArray(req.body[key])) {
+        req.body[key].push(value);
+      } else {
+        req.body[key] = [req.body[key], value];
+      }
+    } else {
+      req.body[key] = value;
+    }
   })
 
   req.busboy.on('finish', () => {

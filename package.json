@@ -10,8 +10,8 @@
     "start": "node ./bin/www"
   },
   "repository": {
-    "type" : "git",
-    "url" : "https://github.com/plamen911/expressjs-hw-2016-10-19.git"
+    "type": "git",
+    "url": "https://github.com/plamen911/expressjs-hw-2016-10-19.git"
   },
   "dependencies": {
     "body-parser": "~1.15.1",
