@@ -1,10 +1,16 @@
 let express = require('express')
 let router = express.Router()
+let fs = require('fs')
+let path = require('path')
 let config = require('../config')
 let Agent = require('../models/agent')
 let Property = require('../models/property')
 let _ = require('underscore')
 let upload = require('../middleware/upload')
+
+// Constants
+let UPLOAD_DIR = path.join(__dirname, '/../public/uploads/avatars/')
+let IMAGE_TYPES = ['image/jpg', 'image/jpeg', 'image/png']
 
 // utility functions
 function getPostedData (req) {
@@ -56,7 +62,7 @@ let pageTitle = 'Agent Information'
 
 // add new agent
 router.post('/create',
-  upload,
+  upload(UPLOAD_DIR, IMAGE_TYPES),
   (req, res, next) => {
     let data = getPostedData(req)
 
@@ -94,10 +100,11 @@ router.post('/create',
   })
 
 router.post('/update/:id',
-  upload,
+  upload(UPLOAD_DIR, IMAGE_TYPES),
   (req, res, next) => {
     let _id = req.params.id || 0
     let data = getPostedData(req)
+    let deleteOldFile = false
 
     // form validation
     let errors = []
@@ -109,6 +116,7 @@ router.post('/update/:id',
     }
     if (req.files && req.files['avatar']) {
       if (!req.files['avatar'].uploadErrors.length) {
+        deleteOldFile = true
         data.avatar = req.files['avatar'].fileName
       } else {
         req.files['avatar'].uploadErrors.forEach((error) => {
@@ -131,6 +139,14 @@ router.post('/update/:id',
     Agent
           .findOne({_id: _id})
           .then((agent) => {
+            // housekeeping
+            if (deleteOldFile) {
+                try {
+                    fs.unlinkSync(UPLOAD_DIR + agent.avatar);
+                } catch (err) {
+                    console.log(`Error deleting old avatar: ${err.message}`)
+                }
+            }
             agent = _.extend(agent, data)
             agent
                   .save()
