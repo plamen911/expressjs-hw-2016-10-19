@@ -141,11 +141,11 @@ router.post('/update/:id',
           .then((agent) => {
             // housekeeping
             if (deleteOldFile) {
-                try {
-                    fs.unlinkSync(UPLOAD_DIR + agent.avatar);
-                } catch (err) {
-                    console.log(`Error deleting old avatar: ${err.message}`)
-                }
+              try {
+                fs.unlinkSync(UPLOAD_DIR + agent.avatar)
+              } catch (err) {
+                console.log(`Error deleting old avatar: ${err.message}`)
+              }
             }
             agent = _.extend(agent, data)
             agent

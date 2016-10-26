@@ -3,10 +3,6 @@ let path = require('path')
 let uid = require('uid2')
 let _ = require('underscore')
 
-// Constants
-let UPLOAD_DIR = path.join(__dirname, '/../public/uploads/')
-let IMAGE_TYPES = ['image/jpeg', 'image/png']
-
 module.exports = (uploadDir, allowedMimes) => {
   return (req, res, next) => {
     let writeStream
@@ -51,10 +47,9 @@ module.exports = (uploadDir, allowedMimes) => {
         }
 
         try {
-          fs.mkdirSync(uploadDir);
+          fs.mkdirSync(uploadDir)
         } catch (err) {
           console.log(`Error creating dir: ${err.message}`)
-          file.resume()
         }
 
         // determine the new path to save the image
@@ -74,12 +69,12 @@ module.exports = (uploadDir, allowedMimes) => {
       key = key.replace(/[^a-z0-9_]/gi, '')
       if (req.body.hasOwnProperty(key)) {
         if (_.isArray(req.body[key])) {
-          req.body[key].push(value);
+          req.body[key].push(value)
         } else {
-          req.body[key] = [req.body[key], value];
+          req.body[key] = [req.body[key], value]
         }
       } else {
-        req.body[key] = value;
+        req.body[key] = value
       }
     })
 
