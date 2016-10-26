@@ -1,11 +1,16 @@
 let express = require('express')
 let router = express.Router()
+let fs = require('fs')
+let path = require('path')
 let config = require('../config')
 let Property = require('../models/property')
 let Owner = require('../models/owner')
 let Agent = require('../models/agent')
 let _ = require('underscore')
 let upload = require('../middleware/upload')
+
+let UPLOAD_DIR = path.join(__dirname, '/../public/uploads/images/')
+let IMAGE_TYPES = ['image/jpg', 'image/jpeg', 'image/png']
 
 // utility functions
 function getPostedData (req) {
@@ -48,7 +53,7 @@ let pageTitle = 'Property Information'
 router.post('/create',
     getOwnerPulldownData,
     getAgentPulldownData,
-    upload,
+    upload(UPLOAD_DIR, IMAGE_TYPES),
     (req, res, next) => {
       let data = getPostedData(req)
 
@@ -105,7 +110,7 @@ router.post('/create',
 router.post('/update/:id',
     getOwnerPulldownData,
     getAgentPulldownData,
-    upload,
+    upload(UPLOAD_DIR, IMAGE_TYPES),
     (req, res, next) => {
       let _id = req.params.id || 0
       let data = getPostedData(req)

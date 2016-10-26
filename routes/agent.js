@@ -140,7 +140,7 @@ router.post('/update/:id',
           .findOne({_id: _id})
           .then((agent) => {
             // housekeeping
-            if (deleteOldFile) {
+            if (agent.avatar && deleteOldFile) {
               try {
                 fs.unlinkSync(UPLOAD_DIR + agent.avatar)
               } catch (err) {
@@ -249,6 +249,13 @@ router.get('/delete/:id', (req, res, next) => {
   Agent
         .findOne({_id: _id})
         .then((agent) => {
+          if (agent.avatar) {
+              try {
+                  fs.unlinkSync(UPLOAD_DIR + agent.avatar)
+              } catch (err) {
+                  console.log(`Error deleting avatar: ${err.message}`)
+              }
+          }
           agent
                 .remove()
                 .then(() => {
@@ -276,7 +283,7 @@ router.get('/delete/:id', (req, res, next) => {
                                     })
                           }
 
-                          if (properties) {
+                          if (properties && properties.length) {
                             removeAgentRef(0)
                           } else {
                             res.redirect('/agent/list')

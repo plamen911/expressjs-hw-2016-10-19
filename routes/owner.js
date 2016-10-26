@@ -140,7 +140,7 @@ router.post('/update/:id',
             .findOne({_id: _id})
             .then((owner) => {
               // housekeeping
-              if (deleteOldFile) {
+              if (owner.avatar && deleteOldFile) {
                 try {
                   fs.unlinkSync(UPLOAD_DIR + owner.avatar)
                 } catch (err) {
@@ -249,6 +249,13 @@ router.get('/delete/:id', (req, res, next) => {
   Owner
         .findOne({_id: _id})
         .then((owner) => {
+          if (owner.avatar) {
+              try {
+                  fs.unlinkSync(UPLOAD_DIR + owner.avatar)
+              } catch (err) {
+                  console.log(`Error deleting avatar: ${err.message}`)
+              }
+          }
           owner
                 .remove()
                 .then(() => {
@@ -256,11 +263,14 @@ router.get('/delete/:id', (req, res, next) => {
                   Property
                         .find({_owner: _id})
                         .then((properties) => {
-                            // loop trough each property to remove the owner reference
+                          // loop trough each property to remove the owner reference
                           let removeOwnerRef = (i) => {
                             if (typeof properties[i] === 'undefined') {
                               res.redirect('/owner/list')
                             }
+
+                            console.log('removing reference from ' , properties[i]._id)
+
                             properties[i]._owner = null
                             properties[i]
                                     .save()
@@ -268,7 +278,11 @@ router.get('/delete/:id', (req, res, next) => {
                                       removeOwnerRef(++i)
                                     })
                                     .catch((err) => {
-                                      res.render('error', {
+
+
+                                        console.log('Error removing reference to owner...: ', err)
+
+                                      return res.render('error', {
                                         pageTitle: pageTitle,
                                         message: 'Error removing reference to owner.',
                                         error: err
@@ -276,7 +290,7 @@ router.get('/delete/:id', (req, res, next) => {
                                     })
                           }
 
-                          if (properties) {
+                          if (properties && properties.length) {
                             removeOwnerRef(0)
                           } else {
                             res.redirect('/owner/list')
